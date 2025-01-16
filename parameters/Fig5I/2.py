@@ -1,0 +1,68 @@
+#
+# Parameters for modeling the clustering of Pdgfra+ cells.
+#
+
+domain_size = [60, 14]   # domain width, height (number of cells) #SOPHIA_CHANG: originally [60,14] for %d
+
+# Thickness of top layer (now epithelium)
+lumen_thickness = 6      
+
+# Mesenchymal layer thicknesses with corresponding Pdgfra- densities. 
+# The three layers represent:
+# 1: Pdgfra+/clustering layer, 
+# 2-3: Bulk Pdgfra- mesenchyme with variable number of Pdgfra+ cells (if required).
+# If the sum of mesenchymal layers plus epithelial/lumen layer is less than domain
+# height, the rest of the cells are assigned Pdgfra- state.
+mes_thickness = [1, 0, 0]
+mes_density = [0.0, 1.0, 1.0]
+
+init_noise = 0.05      # initial arrangement noise
+rng_seed = 2            # random number generator seed
+
+dt = 0.25              # simulation time step, old: 0.025, 501
+tMax = 501             # simulation time end point
+
+# Cell target areas for each type
+A0 = [0.9, 0.5, 0.9]    # Pdgfra-, Pdgfra+, epithelium
+
+# Cell target perimeter. Assigned as P0 = p0 * sqrt(A0), where p0 sets the 
+# preferred shape as: 
+# 3.722 -> hexagons
+# 3.812 -> pentagons
+# 4.0   -> squares
+# 4.2426 -> rectangles with 1-2 proportions
+# 4.559 -> triangles
+# 4.6188 -> rectangles with 1-3 proportions
+P0 = [3.812, 3.722, 3.812] # * np.sqrt(vor.A0)
+
+# Motility - random motion
+v0 = [0.6, 1.8, 0.4]      # Pdgfra- (mesenchyme), Pdgfra+ (green), epithelium
+
+# Inverse of persistence timescale for motility
+Dr = 40
+
+# Coefficient for deviation from target area in energy functional
+kappa_A = 0.3
+
+# Same as above for perimeter
+kappa_P = 0.05
+
+# Maximal radius to engage in repulsion
+a = 0.2   
+
+# Coefficient of repulsion.
+k = 2     
+
+# Heterotypic adhesion energies - cost of interface 
+EM = 0.075      # Epithelium-Mesenchyme (s12 in Cahn-Hilliard)
+EG = 0.075      # Epithelium-Green (s13)
+MG = 0.100      # Mesenchyme-Green (s23)
+
+# Homotypic adhesion energies (cohesion)
+MM = 0.00
+GG = 0.00
+EE = 0.00
+
+W = [MM, MG, EM], \
+    [MG, GG, EG], \
+    [EM, EG, EE]
